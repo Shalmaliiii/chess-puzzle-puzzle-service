@@ -125,21 +125,20 @@ public class PuzzleService {
             puzzle.getSolvedBy().add(userId);
             puzzle.setSolvedByCount(puzzle.getSolvedByCount() + 1);
 
-            // Update average solve time
             long totalTime = puzzle.getAverageSolveTimeMs() * (puzzle.getSolvedByCount() - 1) + request.getTimeMs();
             puzzle.setAverageSolveTimeMs(totalTime / puzzle.getSolvedByCount());
 
             puzzleRepository.save(puzzle);
-        }
 
-        solvedProducer.sendSolvedEvent(PuzzleSolvedEvent.builder()
-                .userId(userId)
-                .puzzleId(id)
-                .difficulty(puzzle.getDifficulty().name())
-                .timeMs(request.getTimeMs())
-                .correct(true)
-                .mateIn(puzzle.getMateIn())
-                .build());
+            solvedProducer.sendSolvedEvent(PuzzleSolvedEvent.builder()
+                    .userId(userId)
+                    .puzzleId(id)
+                    .difficulty(puzzle.getDifficulty().name())
+                    .timeMs(request.getTimeMs())
+                    .correct(true)
+                    .mateIn(puzzle.getMateIn())
+                    .build());
+        }
 
         return new PuzzleSolveResponse("Puzzle solved successfully");
     }
