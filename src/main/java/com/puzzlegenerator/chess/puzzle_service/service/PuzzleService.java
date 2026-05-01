@@ -26,16 +26,23 @@ public class PuzzleService {
     private final PuzzleGenerateProducer generateProducer;
     private final PuzzleSolvedProducer solvedProducer;
 
+    private static final String ANONYMOUS = "anonymous";
+
     public PuzzleResponse getNextPuzzle(String userId, String difficulty) {
         List<Puzzle> puzzles;
+        boolean isAnonymous = ANONYMOUS.equals(userId);
 
         if (difficulty != null && !difficulty.isBlank()) {
             PuzzleDifficulty diff = PuzzleDifficulty.valueOf(difficulty.toUpperCase());
-            puzzles = puzzleRepository.findByDifficultyAndStatusAndSolvedByNotContaining(
-                    diff, PuzzleStatus.ACTIVE, userId);
+            puzzles = isAnonymous
+                    ? puzzleRepository.findByDifficultyAndStatus(diff, PuzzleStatus.ACTIVE)
+                    : puzzleRepository.findByDifficultyAndStatusAndSolvedByNotContaining(
+                            diff, PuzzleStatus.ACTIVE, userId);
         } else {
-            puzzles = puzzleRepository.findByStatusAndSolvedByNotContaining(
-                    PuzzleStatus.ACTIVE, userId);
+            puzzles = isAnonymous
+                    ? puzzleRepository.findByStatus(PuzzleStatus.ACTIVE)
+                    : puzzleRepository.findByStatusAndSolvedByNotContaining(
+                            PuzzleStatus.ACTIVE, userId);
         }
 
         if (puzzles.isEmpty()) {
@@ -121,7 +128,7 @@ public class PuzzleService {
         Puzzle puzzle = puzzleRepository.findById(id)
                 .orElseThrow(() -> new PuzzleNotFoundException(id));
 
-        if (!puzzle.getSolvedBy().contains(userId)) {
+        if (!ANONYMOUS.equals(userId) && !puzzle.getSolvedBy().contains(userId)) {
             puzzle.getSolvedBy().add(userId);
             puzzle.setSolvedByCount(puzzle.getSolvedByCount() + 1);
 

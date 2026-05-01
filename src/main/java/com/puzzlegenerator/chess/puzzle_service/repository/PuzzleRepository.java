@@ -17,6 +17,10 @@ public interface PuzzleRepository extends MongoRepository<Puzzle, String> {
 
     List<Puzzle> findByStatusAndSolvedByNotContaining(PuzzleStatus status, String userId);
 
+    List<Puzzle> findByDifficultyAndStatus(PuzzleDifficulty difficulty, PuzzleStatus status);
+
+    List<Puzzle> findByStatus(PuzzleStatus status);
+
     long countByDifficulty(PuzzleDifficulty difficulty);
 
     long countByStatus(PuzzleStatus status);

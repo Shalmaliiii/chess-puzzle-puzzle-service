@@ -117,22 +117,22 @@ public class DataSeeder implements ApplicationRunner {
 
         puzzles.add(createPuzzle(
                 "r1b1kb1r/pppp1ppp/5n2/4p1q1/2BnP3/2N2N2/PPPP1PPP/R1BQK2R w KQkq - 0 1",
-                List.of("f3d4", "g5g2", "d4f5", "g2f1", "e1d2", "f1g2", "d1g4", "g2g4", "f5h6"), 4, PuzzleDifficulty.MASTER, "WHITE",
+                List.of("f3d4", "g5g2", "d4f5", "g2f1", "e1d2", "f1g2", "d1g4", "g2g4", "f5h6"), 5, PuzzleDifficulty.MASTER, "WHITE",
                 List.of("mate-in-4", "knight-attack")));
 
         puzzles.add(createPuzzle(
                 "rnbqk1nr/pppp1ppp/4p3/8/1bPP4/2N5/PP2PPPP/R1BQKBNR w KQkq - 2 3",
-                List.of("e2e4", "b4c3", "d1g4", "c3a1", "g4g7", "h8f8", "d4d5", "e6d5", "c1h6"), 4, PuzzleDifficulty.MASTER, "WHITE",
+                List.of("e2e4", "b4c3", "d1g4", "c3a1", "g4g7", "h8f8", "d4d5", "e6d5", "c1h6"), 5, PuzzleDifficulty.MASTER, "WHITE",
                 List.of("mate-in-4", "queens-gambit")));
 
         puzzles.add(createPuzzle(
                 "r2q1rk1/ppp1bppp/2n5/3np1b1/8/2N2NP1/PPPPPPBP/R1BQ1RK1 w - - 0 1",
-                List.of("f3e5", "d5c3", "e5c6", "d8d1", "c6e7", "g8h8", "f1d1", "c3e2", "g1f1"), 4, PuzzleDifficulty.MASTER, "WHITE",
+                List.of("f3e5", "d5c3", "e5c6", "d8d1", "c6e7", "g8h8", "f1d1", "c3e2", "g1f1"), 5, PuzzleDifficulty.MASTER, "WHITE",
                 List.of("mate-in-4", "knight-fork")));
 
         puzzles.add(createPuzzle(
                 "r1bq1rk1/pppp1ppp/2n2n2/2b1p3/2B1P3/3P1N2/PPP2PPP/RNBQ1RK1 w - - 0 5",
-                List.of("c1g5", "h7h6", "g5f6", "d8f6", "c4f7", "f8f7", "d1b3", "d7d5", "b3f7"), 4, PuzzleDifficulty.MASTER, "WHITE",
+                List.of("c1g5", "h7h6", "g5f6", "d8f6", "c4f7", "f8f7", "d1b3", "d7d5", "b3f7"), 5, PuzzleDifficulty.MASTER, "WHITE",
                 List.of("mate-in-4", "giuoco-piano")));
 
         puzzleRepository.saveAll(puzzles);
