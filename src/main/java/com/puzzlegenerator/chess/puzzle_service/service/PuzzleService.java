@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Slf4j
 @Service
@@ -54,7 +55,7 @@ public class PuzzleService {
             throw new NoPuzzlesAvailableException();
         }
 
-        Puzzle puzzle = puzzles.getFirst();
+        Puzzle puzzle = puzzles.get(ThreadLocalRandom.current().nextInt(puzzles.size()));
         return toPuzzleResponse(puzzle);
     }
 
@@ -160,6 +161,17 @@ public class PuzzleService {
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Generation request submitted");
         response.put("count", request.getCount());
+        return response;
+    }
+
+    public Map<String, Object> getSolution(String id) {
+        Puzzle puzzle = puzzleRepository.findById(id)
+                .orElseThrow(() -> new PuzzleNotFoundException(id));
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("solutionLine", puzzle.getSolutionLine());
+        response.put("fen", puzzle.getFen());
+        response.put("mateIn", puzzle.getMateIn());
         return response;
     }
 

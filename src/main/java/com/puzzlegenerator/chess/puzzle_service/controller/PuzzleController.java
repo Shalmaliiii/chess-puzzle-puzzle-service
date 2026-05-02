@@ -91,6 +91,13 @@ public class PuzzleController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
     }
 
+    @GetMapping("/{id}/solution")
+    public ResponseEntity<Map<String, Object>> getSolution(@PathVariable String id) {
+        log.info("Getting solution for puzzle: {}", id);
+        Map<String, Object> response = puzzleService.getSolution(id);
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/stats")
     public ResponseEntity<PuzzleStatsResponse> getStats() {
         log.info("Getting puzzle stats");
