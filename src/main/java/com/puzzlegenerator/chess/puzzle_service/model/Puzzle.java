@@ -46,10 +46,11 @@ public class Puzzle {
     private int attemptedCount = 0;
 
     @Builder.Default
-    private long averageSolveTimeMs = 0;
-
-    @Builder.Default
     private long totalSolveTimeMs = 0;
+
+    public long getAverageSolveTimeMs() {
+        return solvedByCount > 0 ? totalSolveTimeMs / solvedByCount : 0;
+    }
 
     @Builder.Default
     @Indexed
