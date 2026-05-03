@@ -7,7 +7,7 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb://localhost:27017/chess_puzzles
+      uri: ${MONGODB_URI:mongodb://localhost:27017/chess_puzzles}
 
   kafka:
     bootstrap-servers: kafka:9092
