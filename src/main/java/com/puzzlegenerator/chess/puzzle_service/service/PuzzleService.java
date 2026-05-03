@@ -48,7 +48,7 @@ public class PuzzleService {
 
         if (puzzles.isEmpty()) {
             generateProducer.sendGenerateEvent(PuzzleGenerateEvent.builder()
-                    .difficulty(difficulty != null ? difficulty.toUpperCase() : "INTERMEDIATE")
+                    .difficulty(difficulty != null && !difficulty.isBlank() ? difficulty.toUpperCase() : "INTERMEDIATE")
                     .count(5)
                     .requestedBy(userId)
                     .build());
