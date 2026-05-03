@@ -11,6 +11,10 @@ import com.puzzlegenerator.chess.puzzle_service.model.PuzzleStatus;
 import com.puzzlegenerator.chess.puzzle_service.repository.PuzzleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -26,6 +30,7 @@ public class PuzzleService {
     private final PuzzleRepository puzzleRepository;
     private final PuzzleGenerateProducer generateProducer;
     private final PuzzleSolvedProducer solvedProducer;
+    private final MongoTemplate mongoTemplate;
 
     private static final String ANONYMOUS = "anonymous";
 
@@ -84,10 +89,12 @@ public class PuzzleService {
                     .build();
         }
 
-        // Increment attemptedCount on first move
+        // Increment attemptedCount atomically on first move
         if (moveNumber == 1) {
-            puzzle.setAttemptedCount(puzzle.getAttemptedCount() + 1);
-            puzzleRepository.save(puzzle);
+            mongoTemplate.updateFirst(
+                    Query.query(Criteria.where("id").is(id)),
+                    new Update().inc("attemptedCount", 1),
+                    Puzzle.class);
         }
 
         String expectedMove = solutionLine.get(playerMoveIndex);
