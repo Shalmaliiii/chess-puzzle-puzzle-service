@@ -25,12 +25,18 @@ public class PuzzleGeneratedConsumer {
     public void handlePuzzleGenerated(PuzzleGeneratedEvent event) {
         log.info("Received puzzle generated event: fen={}, difficulty={}", event.getFen(), event.getDifficulty());
 
+        if (event.getFen() == null || event.getDifficulty() == null
+                || event.getSideToMove() == null || event.getSolutionLine() == null) {
+            log.error("Received puzzle generated event with null required fields, skipping");
+            return;
+        }
+
         try {
             Puzzle puzzle = Puzzle.builder()
                     .fen(event.getFen())
                     .solutionLine(event.getSolutionLine())
                     .mateIn(event.getMateIn())
-                    .difficulty(PuzzleDifficulty.valueOf(event.getDifficulty()))
+                    .difficulty(PuzzleDifficulty.valueOf(event.getDifficulty().toUpperCase()))
                     .sideToMove(event.getSideToMove())
                     .status(PuzzleStatus.ACTIVE)
                     .themes(new ArrayList<>())
