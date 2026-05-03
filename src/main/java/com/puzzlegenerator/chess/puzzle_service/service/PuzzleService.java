@@ -136,23 +136,26 @@ public class PuzzleService {
         Puzzle puzzle = puzzleRepository.findById(id)
                 .orElseThrow(() -> new PuzzleNotFoundException(id));
 
-        if (!ANONYMOUS.equals(userId) && !puzzle.getSolvedBy().contains(userId)) {
-            puzzle.getSolvedBy().add(userId);
-            puzzle.setSolvedByCount(puzzle.getSolvedByCount() + 1);
+        if (!ANONYMOUS.equals(userId)) {
+            com.mongodb.client.result.UpdateResult result = mongoTemplate.updateFirst(
+                    Query.query(Criteria.where("id").is(id)
+                            .and("solvedBy").nin(userId)),
+                    new Update()
+                            .addToSet("solvedBy", userId)
+                            .inc("solvedByCount", 1)
+                            .inc("totalSolveTimeMs", request.getTimeMs()),
+                    Puzzle.class);
 
-            long totalTime = puzzle.getAverageSolveTimeMs() * (puzzle.getSolvedByCount() - 1) + request.getTimeMs();
-            puzzle.setAverageSolveTimeMs(totalTime / puzzle.getSolvedByCount());
-
-            puzzleRepository.save(puzzle);
-
-            solvedProducer.sendSolvedEvent(PuzzleSolvedEvent.builder()
-                    .userId(userId)
-                    .puzzleId(id)
-                    .difficulty(puzzle.getDifficulty().name())
-                    .timeMs(request.getTimeMs())
-                    .correct(true)
-                    .mateIn(puzzle.getMateIn())
-                    .build());
+            if (result.getModifiedCount() > 0) {
+                solvedProducer.sendSolvedEvent(PuzzleSolvedEvent.builder()
+                        .userId(userId)
+                        .puzzleId(id)
+                        .difficulty(puzzle.getDifficulty().name())
+                        .timeMs(request.getTimeMs())
+                        .correct(true)
+                        .mateIn(puzzle.getMateIn())
+                        .build());
+            }
         }
 
         return new PuzzleSolveResponse("Puzzle solved successfully");
